@@ -1,0 +1,189 @@
+#schema.sql
+
+CREATE DATABASE ipl_cricket;
+USE ipl_cricket;
+
+-- Teams Table
+CREATE TABLE Teams (
+    team_id INT PRIMARY KEY AUTO_INCREMENT,
+    team_name VARCHAR(50) UNIQUE NOT NULL,
+    captain VARCHAR(50) NOT NULL
+);
+
+-- Players Table
+CREATE TABLE Players (
+    player_id INT PRIMARY KEY AUTO_INCREMENT,
+    player_name VARCHAR(50) NOT NULL,
+    team_id INT,
+    role ENUM('Batsman', 'Bowler', 'All-rounder', 'Wicket-Keeper'),
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id) ON DELETE CASCADE
+);
+
+-- Matches Table
+CREATE TABLE Matches (
+    match_id INT PRIMARY KEY AUTO_INCREMENT,
+    team1_id INT,
+    team2_id INT,
+    winner_id INT,
+    match_date DATE,
+    venue VARCHAR(100),
+    FOREIGN KEY (team1_id) REFERENCES Teams(team_id),
+    FOREIGN KEY (team2_id) REFERENCES Teams(team_id),
+    FOREIGN KEY (winner_id) REFERENCES Teams(team_id)
+);
+
+-- Player Stats Table
+CREATE TABLE Player_Stats (
+    stat_id INT PRIMARY KEY AUTO_INCREMENT,
+    match_id INT,
+    player_id INT,
+    runs_scored INT DEFAULT 0,
+    balls_faced INT DEFAULT 0,
+    wickets_taken INT DEFAULT 0,
+    economy_rate DECIMAL(4,2) DEFAULT 0.00,
+    FOREIGN KEY (match_id) REFERENCES Matches(match_id),
+    FOREIGN KEY (player_id) REFERENCES Players(player_id)
+);
+
+-- Points Table
+CREATE TABLE Points_Table (
+    team_id INT PRIMARY KEY,
+    matches_played INT DEFAULT 0,
+    matches_won INT DEFAULT 0,
+    matches_lost INT DEFAULT 0,
+    points INT DEFAULT 0,
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id)
+);
+
+
+
+#Inserted Player Data
+
+INSERT INTO Players (player_name, age, nationality, role, team_id) VALUES
+-- Mumbai Indians
+('Rohit Sharma', 36, 'India', 'Batsman', 1),
+('Suryakumar Yadav', 33, 'India', 'Batsman', 1),
+('Jasprit Bumrah', 30, 'India', 'Bowler', 1),
+
+-- Chennai Super Kings
+('MS Dhoni', 42, 'India', 'Wicket-Keeper', 2),
+('Ruturaj Gaikwad', 27, 'India', 'Batsman', 2),
+('Ravindra Jadeja', 35, 'India', 'All-Rounder', 2),
+
+-- Royal Challengers Bangalore
+('Virat Kohli', 35, 'India', 'Batsman', 3),
+('Glenn Maxwell', 34, 'Australia', 'All-Rounder', 3),
+('Mohammed Siraj', 30, 'India', 'Bowler', 3),
+
+-- Kolkata Knight Riders
+('Shreyas Iyer', 29, 'India', 'Batsman', 4),
+('Andre Russell', 35, 'West Indies', 'All-Rounder', 4),
+('Varun Chakravarthy', 32, 'India', 'Bowler', 4),
+
+-- Delhi Capitals
+('Rishabh Pant', 27, 'India', 'Wicket-Keeper', 5),
+('David Warner', 38, 'Australia', 'Batsman', 5),
+('Anrich Nortje', 31, 'South Africa', 'Bowler', 5),
+
+-- Punjab Kings
+('Shikhar Dhawan', 38, 'India', 'Batsman', 6),
+('Sam Curran', 26, 'England', 'All-Rounder', 6),
+('Kagiso Rabada', 30, 'South Africa', 'Bowler', 6),
+
+-- Rajasthan Royals
+('Sanju Samson', 29, 'India', 'Wicket-Keeper', 7),
+('Jos Buttler', 34, 'England', 'Batsman', 7),
+('Yuzvendra Chahal', 34, 'India', 'Bowler', 7),
+
+-- Sunrisers Hyderabad
+('Pat Cummins', 32, 'Australia', 'Bowler', 8),
+('Aiden Markram', 30, 'South Africa', 'Batsman', 8),
+('Bhuvneshwar Kumar', 34, 'India', 'Bowler', 8),
+
+-- Gujarat Titans
+('Shubman Gill', 25, 'India', 'Batsman', 9),
+('Rashid Khan', 27, 'Afghanistan', 'Bowler', 9),
+('Mohammed Shami', 33, 'India', 'Bowler', 9),
+
+-- Lucknow Super Giants
+('KL Rahul', 32, 'India', 'Batsman', 10),
+('Marcus Stoinis', 34, 'Australia', 'All-Rounder', 10),
+('Ravi Bishnoi', 25, 'India', 'Bowler', 10);
+
+#Inserted Team data
+
+INSERT INTO Teams (team_name, home_ground, captain, coach) VALUES
+('Mumbai Indians', 'Wankhede Stadium', 'Hardik Pandya', 'Mark Boucher'),
+('Chennai Super Kings', 'M. A. Chidambaram Stadium', 'MS Dhoni', 'Stephen Fleming'),
+('Royal Challengers Bangalore', 'M. Chinnaswamy Stadium', 'Faf du Plessis', 'Sanjay Bangar'),
+('Kolkata Knight Riders', 'Eden Gardens', 'Shreyas Iyer', 'Chandrakant Pandit'),
+('Delhi Capitals', 'Arun Jaitley Stadium', 'Rishabh Pant', 'Ricky Ponting'),
+('Punjab Kings', 'Punjab Cricket Association IS Bindra Stadium', 'Shikhar Dhawan', 'Trevor Bayliss'),
+('Rajasthan Royals', 'Sawai Mansingh Stadium', 'Sanju Samson', 'Kumar Sangakkara'),
+('Sunrisers Hyderabad', 'Rajiv Gandhi International Stadium', 'Pat Cummins', 'Daniel Vettori'),
+('Gujarat Titans', 'Narendra Modi Stadium', 'Shubman Gill', 'Ashish Nehra'),
+('Lucknow Super Giants', 'Ekana Cricket Stadium', 'KL Rahul', 'Justin Langer');
+
+
+#Insert Match Data
+
+INSERT INTO Matches (match_date, team1_id, team2_id, venue, winner_id) VALUES
+('2024-03-31', 1, 2, 'Wankhede Stadium', 1),
+('2024-04-02', 3, 4, 'M. Chinnaswamy Stadium', 3),
+('2024-04-05', 5, 6, 'Arun Jaitley Stadium', 5),
+('2024-04-07', 7, 8, 'Sawai Mansingh Stadium', 8),
+('2024-04-10', 9, 10, 'Narendra Modi Stadium', 9);
+
+
+#Inserted Player Stats for Matches 
+
+INSERT INTO Player_Stats (player_id, match_id, runs_scored, wickets_taken, balls_faced, strike_rate) VALUES
+-- Match 1
+(1, 1, 75, 0, 50, 150.0),  -- Rohit Sharma
+(3, 1, 0, 3, 0, 0.0),      -- Jasprit Bumrah
+
+-- Match 2
+(7, 2, 85, 0, 55, 154.5),  -- Virat Kohli
+(8, 2, 40, 2, 30, 133.3),  -- Glenn Maxwell
+
+-- Match 3
+(13, 3, 60, 0, 40, 150.0), -- Rishabh Pant
+(15, 3, 20, 3, 10, 200.0), -- Anrich Nortje
+
+-- Match 4
+(19, 4, 10, 4, 5, 200.0),  -- Yuzvendra Chahal
+(17, 4, 50, 0, 35, 142.8), -- Jos Buttler
+
+-- Match 5
+(25, 5, 55, 0, 45, 122.2), -- KL Rahul
+(26, 5, 30, 3, 25, 120.0); -- Marcus Stoinis
+
+
+#Inserted Points Table
+
+INSERT INTO Points (team_id, matches_played, wins, losses, points) VALUES
+(1, 5, 3, 2, 6),
+(2, 5, 2, 3, 4),
+(3, 5, 4, 1, 8),
+(4, 5, 1, 4, 2),
+(5, 5, 3, 2, 6),
+(6, 5, 2, 3, 4),
+(7, 5, 3, 2, 6),
+(8, 5, 4, 1, 8),
+(9, 5, 3, 2, 6),
+(10, 5, 2, 3, 4);
+
+#Inserted Venues
+
+INSERT INTO Venues (venue_name, city, capacity) VALUES
+('Wankhede Stadium', 'Mumbai', 33000),
+('M. A. Chidambaram Stadium', 'Chennai', 50000),
+('M. Chinnaswamy Stadium', 'Bangalore', 40000),
+('Eden Gardens', 'Kolkata', 68000),
+('Arun Jaitley Stadium', 'Delhi', 41820),
+('Punjab Cricket Association Stadium', 'Mohali', 26000),
+('Sawai Mansingh Stadium', 'Jaipur', 30000),
+('Rajiv Gandhi International Stadium', 'Hyderabad', 55000),
+('Narendra Modi Stadium', 'Ahmedabad', 132000),
+('Ekana Cricket Stadium', 'Lucknow', 50000);
+

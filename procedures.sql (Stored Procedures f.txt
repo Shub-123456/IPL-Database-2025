@@ -1,0 +1,20 @@
+#procedures.sql (Stored Procedures for Automation)
+
+DELIMITER $$
+
+CREATE PROCEDURE UpdatePoints(IN winner_team INT, IN loser_team INT)
+BEGIN
+    UPDATE Points 
+    SET wins = wins + 1, points = points + 2 
+    WHERE team_id = winner_team;
+    
+    UPDATE Points 
+    SET losses = losses + 1 
+    WHERE team_id = loser_team;
+END $$
+
+DELIMITER ;
+
+
+
+

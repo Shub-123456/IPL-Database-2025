@@ -1,0 +1,15 @@
+#triggers.sql (Triggers for Automated Updates)
+#Trigger: Automatically Update Team Wins After Match
+
+DELIMITER $$
+
+CREATE TRIGGER after_match_winner_update
+AFTER INSERT ON Matches
+FOR EACH ROW
+BEGIN
+    UPDATE Points 
+    SET wins = wins + 1, points = points + 2 
+    WHERE team_id = NEW.winner_id;
+END $$
+
+DELIMITER ;

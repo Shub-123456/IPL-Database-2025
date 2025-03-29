@@ -1,0 +1,37 @@
+#queries.sql (Analytical Queries)
+
+#1. Find the Top 5 Batsmen (Highest Runs Scored)
+
+SELECT p.player_name, SUM(ps.runs_scored) AS total_runs
+FROM Player_Stats ps
+JOIN Players p ON ps.player_id = p.player_id
+GROUP BY p.player_name
+ORDER BY total_runs DESC
+LIMIT 5;
+
+
+#2. Find the Leading Wicket-Takers
+
+SELECT p.player_name, SUM(ps.wickets_taken) AS total_wickets
+FROM Player_Stats ps
+JOIN Players p ON ps.player_id = p.player_id
+GROUP BY p.player_name
+ORDER BY total_wickets DESC
+LIMIT 5;
+
+
+#3. Get Team Rankings Based on Points
+
+SELECT t.team_name, p.points
+FROM Points p
+JOIN Teams t ON p.team_id = t.team_id
+ORDER BY p.points DESC;
+
+
+ #4. Find the Most Successful Team (Highest Wins)
+
+SELECT t.team_name, COUNT(m.winner_id) AS total_wins
+FROM Matches m
+JOIN Teams t ON m.winner_id = t.team_id
+GROUP BY t.team_name
+ORDER BY total_wins DESC;
